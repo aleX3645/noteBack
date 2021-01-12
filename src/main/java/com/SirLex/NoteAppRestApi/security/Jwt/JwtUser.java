@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 public class JwtUser implements UserDetails {
 
@@ -15,13 +16,13 @@ public class JwtUser implements UserDetails {
     private final String username;
     private final String email;
     private final String password;
-    private final List<Note> notes;
+    private final Set<Note> notes;
     private final boolean enabled;
     private final Date lastPasswordResetDate;
     private final Collection<? extends GrantedAuthority > authorities;
 
 
-    public JwtUser(Long id, String username, String email, String password, List<Note> notes, boolean enabled, Date lastPasswordResetDate, Collection<? extends GrantedAuthority> authorities) {
+    public JwtUser(Long id, String username, String email, String password, Set<Note> notes, boolean enabled, Date lastPasswordResetDate, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -75,7 +76,7 @@ public class JwtUser implements UserDetails {
         return authorities;
     }
 
-    public List<Note> getNotes() {
+    public Set<Note> getNotes() {
         return notes;
     }
 

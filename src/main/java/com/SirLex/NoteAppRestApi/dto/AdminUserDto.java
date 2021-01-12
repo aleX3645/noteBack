@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -15,7 +16,7 @@ public class AdminUserDto {
     private String username;
     private String email;
     private String password;
-    private List<Note> notes;
+    private Set<Note> notes;
     private Status status;
 
     public User toUser(){

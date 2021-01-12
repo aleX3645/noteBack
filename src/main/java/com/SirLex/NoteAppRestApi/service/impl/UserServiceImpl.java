@@ -12,8 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -56,6 +55,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByUsername(String username) {
         User user = userRepository.findByUsername(username);
+       // for(Note n:user.getNotes()){
+         //   System.out.println(n.getText());
+        //}
         log.info("In findByUsername: {} - found by username", user.getUsername());
         return user;
     }
@@ -68,10 +70,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Note> getAllNotesForUsername(String username) {
+    public Set<Note> getAllNotesForUsername(String username) {
         User user = findByUsername(username);
 
-        List<Note> notes = user.getNotes();
+        Set<Note> notes = user.getNotes();
 
         log.info("In getAllNotesForUserById: found {} notes by user id {}", notes.size(), user.getId());
         return notes;
@@ -81,7 +83,7 @@ public class UserServiceImpl implements UserService {
     public Note getNoteByNoteIdUsername(String username, Long noteId) {
         User user = findByUsername(username);
 
-        List<Note> notes = user.getNotes();
+        Set<Note> notes = user.getNotes();
         Note note = findNoteById(notes, noteId);
 
         log.info("In getNoteByNoteIdUserId: found node by id {} for user id {}", note.getId(), user.getId());
@@ -102,13 +104,13 @@ public class UserServiceImpl implements UserService {
         log.info("In delete: user by id {} deleted", id);
     }
 
-    Note findNoteById(List<Note> notes, Long noteId){
-        List<Note> result = new ArrayList<Note>();
-        notes.forEach(note ->{
-            if(note.getId() == noteId)
-                result.add(note);
-        });
+    Note findNoteById(Set<Note> notes, Long noteId){
 
-        return result.get(0);
+        for(Note n:notes){
+            if(n.getId() == noteId){
+                return n;
+            }
+        }
+        return  null;
     }
 }

@@ -107,7 +107,11 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 
-            <column name="text" type="VARCHAR(5000)">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="text" type="TEXT">
                 <constraints nullable="false"/>
             </column>
 
@@ -145,10 +149,12 @@
     <changeSet id="1.0.9" author="alexey_cher">
         <addForeignKeyConstraint baseColumnNames="note_id"
                                  baseTableName="users_notes"
-                                 constraintName="fk_user_notes_notes"
+                                 constraintName="fk_user_notes_note"
                                  onDelete="CASCADE"
                                  onUpdate="RESTRICT"
                                  referencedColumnNames="id"
                                  referencedTableName="notes"/>
     </changeSet>
+
+
 </databaseChangeLog>

@@ -4,6 +4,7 @@ import com.SirLex.NoteAppRestApi.model.Note;
 import com.SirLex.NoteAppRestApi.model.User;
 
 import java.util.List;
+import java.util.Set;
 
 public interface UserService {
     User register(User user);
@@ -14,7 +15,7 @@ public interface UserService {
 
     User findById(Long id);
 
-    List<Note> getAllNotesForUsername(String username);
+    Set<Note> getAllNotesForUsername(String username);
 
     Note getNoteByNoteIdUsername(String username, Long noteId);
 

@@ -1,5 +1,8 @@
 package com.SirLex.NoteAppRestApi.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -27,8 +30,4 @@ public class Note{
 
     @Column(name = "text")
     private String text;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
-
 }
