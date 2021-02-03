@@ -1,18 +1,17 @@
 package com.SirLex.NoteAppRestApi.rest;
 
+import com.SirLex.NoteAppRestApi.dto.AuthenticationRequestDto;
+import com.SirLex.NoteAppRestApi.dto.UpdateNoteRequestDto;
 import com.SirLex.NoteAppRestApi.dto.UserDto;
 import com.SirLex.NoteAppRestApi.model.User;
 import com.SirLex.NoteAppRestApi.service.UserService;
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/api/v1/users/")
 public class UserRestControllerV1 {
     private final UserService userService;
 
@@ -21,10 +20,9 @@ public class UserRestControllerV1 {
         this.userService = userService;
     }
 
-    @GetMapping(value = "{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") Long id){
-        User user = userService.findById(id);
-
+    @GetMapping(value = "/api/v1/getUserInfo/")
+    public ResponseEntity<UserDto> getUserInfo(){
+        User user = userService.getUserByJwt();
         if(user == null){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -32,5 +30,16 @@ public class UserRestControllerV1 {
         UserDto result = UserDto.fromUser(user);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/api/v1/updateNoteById/{id}")
+    public HttpStatus updateNote(@PathVariable("id") Long id,
+                                       @RequestBody UpdateNoteRequestDto requestDto) {
+        try{
+            userService.updateNoteByNoteId(id,requestDto.getText());
+        }catch (Exception exception){
+            return HttpStatus.BAD_REQUEST;
+        }
+        return HttpStatus.OK;
     }
 }

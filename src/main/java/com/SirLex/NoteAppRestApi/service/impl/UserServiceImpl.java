@@ -9,6 +9,8 @@ import com.SirLex.NoteAppRestApi.repository.UserRepository;
 import com.SirLex.NoteAppRestApi.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,10 +41,10 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
         user.setStatus(Status.ACTIVE);
 
-        User registredUser = userRepository.save(user);
+        User registeredUser = userRepository.save(user);
 
-        log.info("In register: user - {} successfully registered",registredUser.getUsername());
-        return registredUser;
+        log.info("In register: user - {} successfully registered",registeredUser.getUsername());
+        return registeredUser;
     }
 
     @Override
@@ -55,9 +57,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByUsername(String username) {
         User user = userRepository.findByUsername(username);
-       // for(Note n:user.getNotes()){
-         //   System.out.println(n.getText());
-        //}
         log.info("In findByUsername: {} - found by username", user.getUsername());
         return user;
     }
@@ -80,22 +79,34 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Note getNoteByNoteIdUsername(String username, Long noteId) {
-        User user = findByUsername(username);
-
+    public Note getNoteByNoteIdUser(User user, Long noteId) throws Exception{
         Set<Note> notes = user.getNotes();
-        Note note = findNoteById(notes, noteId);
+        Note note;
+        try {
+            note = findNoteById(notes, noteId);
+        }catch (Exception exception){
+            throw new Exception("invalid note id");
+        }
 
         log.info("In getNoteByNoteIdUserId: found node by id {} for user id {}", note.getId(), user.getId());
         return note;
     }
 
     @Override
-    public void updateNoteByUsernameNoteId(String username, Long noteId, String text) {
-        Note note = getNoteByNoteIdUsername(username, noteId);
+    public void updateNoteByNoteId(Long noteId, String text) throws Exception{
+        User user = getUserByJwt();
+        Note note = getNoteByNoteIdUser(user, noteId);
         note.setText(text);
+        userRepository.flush();
 
-        log.info("In delete: note with id {} was updated for user {}", noteId,username);
+        log.info("In delete: note with id {} had updated for user {}", noteId,user.getUsername());
+    }
+
+    @Override
+    public User getUserByJwt() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        return findByUsername(userDetails.getUsername());
     }
 
     @Override

@@ -17,9 +17,11 @@ public interface UserService {
 
     Set<Note> getAllNotesForUsername(String username);
 
-    Note getNoteByNoteIdUsername(String username, Long noteId);
+    Note getNoteByNoteIdUser(User user, Long noteId) throws Exception;
 
-    void updateNoteByUsernameNoteId(String username, Long noteId, String text);
+    void updateNoteByNoteId(Long noteId, String text) throws Exception;
+
+    User getUserByJwt();
 
     void delete(Long id);
 }
